@@ -1,3 +1,5 @@
+app/gen/gcp_key_file.json
+
 __pycache__/
 *.py[cod]
 *$py.class
@@ -99,3 +101,5 @@ dmypy.json
 .pytype/
 
 cython_debug/
+
+.idea/

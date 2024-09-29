@@ -1,1 +1,4 @@
-dag-factory==0.19.0
+apache-airflow-providers-google==10.22.0
+astro-sdk-python==1.8.1
+astronomer-providers==1.19.4
+apache-airflow-providers-airbyte==4.0.0
