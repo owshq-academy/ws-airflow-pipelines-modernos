@@ -33,3 +33,9 @@ export GOOGLE_APPLICATION_CREDENTIALS=~/gcp_key_file.json
 astro dev start
 astro dev restart
 ```
+
+### install libs
+```shell
+pip install apache-airflow
+pip install astro-sdk-python
+```

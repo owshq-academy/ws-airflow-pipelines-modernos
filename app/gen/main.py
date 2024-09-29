@@ -14,6 +14,7 @@ import os
 import pandas as pd
 
 from google.cloud import storage
+from pymongo import MongoClient
 from io import StringIO
 from dotenv import load_dotenv
 from datetime import datetime
@@ -24,12 +25,16 @@ load_dotenv()
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 gcs_key_file = os.getenv("GCP_KEY_FILE")
+bucket_name = os.getenv("GCS_BUCKET_NAME")
+mongo_uri = os.getenv("MONGODB_URI")
+db_name = os.getenv("MONGODB_DB_NAME")
 
 if gcs_key_file:
     full_key_file_path = os.path.join(current_directory, gcs_key_file)
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = full_key_file_path
 
-bucket_name = os.getenv("GCS_BUCKET_NAME")
+client = MongoClient(mongo_uri)
+db = client[db_name]
 
 users = users.Users()
 customers = customers.Customers()
@@ -256,3 +261,66 @@ class Storage(object):
             self.upload_blob(order_status_json, orders_status_file_name)
 
             return orders_file_name, orders_status_file_name, merchants_file_name,
+
+
+class MongoDBStorage:
+    """
+    This class is responsible for handling MongoDB operations, including inserting data into specific collections.
+    """
+
+    def __init__(self, uri, db_name):
+        """
+        Initialize MongoDB client and set database.
+
+        Args:
+            uri: MongoDB URI connection string.
+            db_name: MongoDB database name.
+        """
+        self.client = MongoClient(uri)
+        self.db = self.client[db_name]
+
+    def insert_data(self, collection_name, json_data):
+        """
+        Insert data into the specified MongoDB collection.
+
+        Args:
+            collection_name: The name of the MongoDB collection.
+            json_data: The JSON data to insert.
+        """
+        collection = self.db[collection_name]
+        data = pd.read_json(StringIO(json_data.decode('utf-8')))
+        records = data.to_dict(orient='records')
+        collection.insert_many(records)
+        print(f"Inserted {len(records)} records into MongoDB collection: {collection_name}")
+
+    def insert_users(self, json_data):
+        """Inserts users data into MongoDB collection."""
+        self.insert_data('users', json_data)
+
+    def insert_customers(self, json_data):
+        """Inserts customers data into MongoDB collection."""
+        self.insert_data('customers', json_data)
+
+    def insert_drivers(self, json_data):
+        """Inserts drivers data into MongoDB collection."""
+        self.insert_data('drivers', json_data)
+
+    def insert_restaurants(self, json_data):
+        """Inserts restaurants data into MongoDB collection."""
+        self.insert_data('restaurants', json_data)
+
+    def insert_menu(self, json_data):
+        """Inserts menu data into MongoDB collection."""
+        self.insert_data('menu', json_data)
+
+    def insert_payments(self, json_data):
+        """Inserts payments data into MongoDB collection."""
+        self.insert_data('payments', json_data)
+
+    def insert_orders(self, json_data):
+        """Inserts orders data into MongoDB collection."""
+        self.insert_data('orders', json_data)
+
+    def insert_status(self, json_data):
+        """Inserts order status data into MongoDB collection."""
+        self.insert_data('status', json_data)
