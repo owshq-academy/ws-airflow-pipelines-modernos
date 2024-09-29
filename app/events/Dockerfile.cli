@@ -1,0 +1,34 @@
+# docker image
+FROM python:3.9
+LABEL Luan Moreno M. Maciel <luan.moreno@owshq.com>
+
+# copy requirements
+COPY requirements.txt /
+
+# install libraries
+RUN pip install -r /requirements.txt
+RUN apt-get update -y && apt-get install -y curl
+
+# copy files
+COPY . /app
+
+# expose variables
+ENV KAFKA_BOOTSTRAP_SERVER = ""
+ENV KAFKA_SCHEMA_REGISTRY = ""
+ENV MSSQL = ""
+ENV POSTGRES = ""
+ENV MYSQL = ""
+ENV MONGODB = ""
+ENV YSQL = ""
+ENV MINIO = ""
+ENV ACCESS_KEY = ""
+ENV SECRET_KEY = ""
+ENV LANDING_BUCKET = ""
+
+ENV PYTHONPATH /app
+
+# set work directory
+WORKDIR /app
+
+# run program [exec]
+CMD ["python","cli.py"]

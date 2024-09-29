@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+# scheduler type
+kind: CronJob
+metadata:
+  # name of the metadata
+  name: do-owshq-svc-orion-crj-strimzi-ingestion-fastapi
+spec:
+  # at every 5 minutes
+  schedule: "*/1 * * * *"
+  # stop another job to run
+  # at the same time of another
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          # name of the container
+          # image from container registry
+          - name: crj-strimzi-ingestion-fastapi
+            image: owshq/ingestion-data-stores-python-app:1.0
+            imagePullPolicy: Always
+            env:
+              - name: "KAFKA_BOOTSTRAP_SERVER"
+                value: "20.110.117.178:9094"
+            command: ["/bin/sh","-c"]
+            args: ["curl -X 'POST' 'http://20.246.125.186:3636/kafka/user_events/100' -H 'accept: application/json' -d '' && curl -X 'POST' 'http://20.246.125.186:3636/kafka/flight_events/100' -H 'accept: application/json' -d ''"]
+          restartPolicy: OnFailure

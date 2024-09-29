@@ -1,0 +1,28 @@
+# docker image
+FROM python:3.9
+
+# copy requirements
+COPY ../requirements.txt /
+
+# install libraries
+RUN pip install -r /requirements.txt
+RUN apt-get update -y && apt-get install -y curl
+
+# copy files
+COPY . /app
+
+# expose variables
+# use internal address
+ENV KAFKA_BOOTSTRAP_SERVER="edh-kafka-brokers.ingestion.svc.Cluster.local:9092"
+ENV KAFKA_TOPIC_USER_EVENTS_JSON="src-app-user-events-json"
+ENV KAFKA_TOPIC_FLIGHT_EVENTS_JSON="src-app-flight-events-json"
+ENV KAFKA_TOPIC_RIDE_EVENTS_JSON="src-app-ride-events-json"
+
+# set work directory
+WORKDIR /app
+
+# port
+EXPOSE 3636
+
+# run program [exec]
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "3636"]

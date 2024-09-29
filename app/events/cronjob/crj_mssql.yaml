@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+# scheduler type
+kind: CronJob
+metadata:
+  # name of the metadata
+  name: crj-mssql-ingestion
+spec:
+  # at every 10 minutes
+  schedule: "*/10 * * * *"
+  # stop another job to run
+  # at the same time of another
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          # name of the container
+          # image from container registry
+          - name: crj-mssql-ingestion
+            image: owshq/ingestion-data-stores-python-app:1.0
+            imagePullPolicy: Always
+            env:
+              - name: "MSSQL"
+                value: "mssql+pymssql://sa:IlS27OpKxw9EYObU80dz@10.245.4.16:1433/owshq"
+            command: ["python","cli.py","mssql"]
+          restartPolicy: OnFailure
+
+

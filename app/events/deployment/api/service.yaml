@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-lb-ingestion-data-stores-app-python-api
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3636
+    targetPort: 3636
+  selector:
+    name: ingestion-data-stores-app-python-api
+
+
+

@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+# scheduler type
+kind: CronJob
+metadata:
+  # name of the metadata
+  name: crj-postgres-ingestion
+spec:
+  # at every 10 minutes
+  schedule: "*/5 * * * *"
+  # stop another job to run
+  # at the same time of another
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          # name of the container
+          # image from container registry
+          - name: crj-postgres-ingestion
+            image: owshq/ingestion-data-stores-python-app:1.0
+            imagePullPolicy: Always
+            env:
+              - name: "POSTGRES"
+                value: "postgresql://postgres:6e8e5979-25c5-44e2-ad76-7a4e8ee68c6f@159.89.244.91:5432/owshq"
+            command: ["python","cli.py","postgres"]
+          restartPolicy: OnFailure
+
+

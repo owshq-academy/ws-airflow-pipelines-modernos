@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+# scheduler type
+kind: CronJob
+metadata:
+  # name of the metadata
+  name: do-owshq-svc-orion-crj-strimzi-ingestion
+spec:
+  # at every 5 minutes
+  schedule: "*/5 * * * *"
+  # stop another job to run
+  # at the same time of another
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          # name of the container
+          # image from container registry
+          - name: crj-strimzi-ingestion
+            image: owshq/ingestion-data-stores-python-app:1.0
+            imagePullPolicy: Always
+            env:
+              - name: "KAFKA_BOOTSTRAP_SERVER"
+                value: "137.184.240.171:9094"
+            command: ["/bin/sh","-c"]
+            args: ["python cli.py 'strimzi-users-json'; python cli.py 'strimzi-agent-json' && python cli.py 'strimzi-credit-card-json' && python cli.py 'strimzi-musics-json' && python cli.py 'strimzi-movies-titles-json' && 
+python cli.py 'strimzi-movies-keywords-json' && python cli.py 'strimzi-movies-ratings-json' && python cli.py 'strimzi-rides-json'"]
+          restartPolicy: OnFailure
