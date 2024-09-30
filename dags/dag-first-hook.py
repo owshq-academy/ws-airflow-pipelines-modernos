@@ -2,6 +2,7 @@
 Hook to connect to MongoDB Atlas and retrieve a document from a collection.
 """
 
+# TODO Libraries
 import json
 from datetime import datetime, timedelta
 from airflow.decorators import dag, task
@@ -36,8 +37,9 @@ def init():
     start = EmptyOperator(task_id="start")
     end = EmptyOperator(task_id="end")
 
+    # TODO Retrieve users collection from MongoDB
     @task
-    def get_users_collection():
+    def get_users():
         hook = MongoHook(conn_id=mongodb_atlas_conn_id)
 
         database = "owshq"
@@ -47,21 +49,15 @@ def init():
 
         try:
             conn = hook.get_conn()
-            print(f"Connected to MongoDB: {conn.address}")
-            print(f"Using database: {database}")
-            print(f"Querying collection: {collection}")
-            print(f"Query: {json.dumps(query)}")
-
             db = conn[database]
             coll = db[collection]
 
             count = coll.count_documents(query)
-            print(f"Documents matching query: {count}")
 
             data = hook.find(
+                mongo_db=database,
                 mongo_collection=collection,
-                query=query,
-                mongo_db=database
+                query=query
             )
 
             documents = list(data)
@@ -82,7 +78,7 @@ def init():
             print(f"An error occurred: {str(e)}")
             raise
 
-    users_collection = get_users_collection()
+    users_collection = get_users()
 
     # TODO Task Dependencies
     start >> users_collection >> end

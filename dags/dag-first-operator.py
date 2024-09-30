@@ -1,4 +1,5 @@
 """
+Operator that moves files from one GCS bucket to another.
 """
 
 # TODO Imports
@@ -40,13 +41,13 @@ def init():
     end = EmptyOperator(task_id="end")
 
     copy_users_gcs_to_gcs = GCSToGCSOperator(
-        task_id="copy_gcs_to_gcs",
+        task_id="copy_users_gcs_to_gcs",
         source_bucket=SOURCE_BUCKET,
         source_object=USERS_SOURCE_OBJECT,
         destination_bucket=DESTINATION_BUCKET,
         destination_object=USERS_DESTINATION_OBJECT,
         move_object=False,
-        gcp_conn_id=GCS_CONN_ID,
+        gcp_conn_id=GCS_CONN_ID
     )
 
     # TODO Task Dependencies
