@@ -3,3 +3,6 @@ astro-sdk-python==1.8.1
 astronomer-providers==1.19.4
 apache-airflow-providers-airbyte==4.0.0
 apache-airflow-providers-mongo==4.1.0
+dbt-core==1.8.7
+astronomer-cosmos==1.6.0
+dbt-bigquery==1.8.2

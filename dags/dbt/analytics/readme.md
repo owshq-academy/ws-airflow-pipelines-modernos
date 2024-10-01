@@ -2,11 +2,14 @@
 
 ### install and configure
 ```shell
-python -m pip install dbt-core
+pip install "dbt-core"
+pip install "dbt-bigquery"
 
-python -m pip install dbt-bigquery
+pip list | grep dbt
 
 dbt --version
+
+pip uninstall dbt-core
 ```
 
 ### execute models
