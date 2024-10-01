@@ -1,10 +1,13 @@
 """
+DataSets & Data-Aware Scheduling
+https://www.astronomer.io/docs/learn/airflow-datasets
 """
 
 import os
 from datetime import datetime, timedelta
 from pathlib import Path
 from airflow.decorators import dag
+from airflow.datasets import Dataset
 from airflow.operators.empty import EmptyOperator
 from cosmos import ProjectConfig, ProfileConfig, DbtTaskGroup
 from cosmos.profiles import GoogleCloudServiceAccountDictProfileMapping
@@ -24,6 +27,9 @@ profile_config = ProfileConfig(
     ),
 )
 
+users_parquet_dataset = Dataset("bigquery://OwsHQ.users")
+payments_parquet_dataset = Dataset("bigquery://OwsHQ.payments")
+
 default_args = {
     "owner": "luan moreno m. maciel",
     "retries": 1,
@@ -35,7 +41,7 @@ default_args = {
     dag_id="csm-bq-dbt-datasets",
     start_date=datetime(2024, 10, 1),
     max_active_runs=1,
-    schedule_interval=timedelta(hours=8),
+    schedule=[users_parquet_dataset, payments_parquet_dataset],
     default_args=default_args,
     catchup=False,
     owner_links={"linkedin": "https://www.linkedin.com/in/luanmoreno/"},
