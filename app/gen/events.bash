@@ -1,4 +1,4 @@
-for i in {1..1000}
+for i in {1..30}
 do
-   python cli.py all
+   python cli.py atlas
 done

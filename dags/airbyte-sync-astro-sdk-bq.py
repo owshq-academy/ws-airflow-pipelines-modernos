@@ -1,4 +1,15 @@
 """
+DAG Skeleton
+
+- Imports
+- Connections & Variables
+- DataSets
+- Default Arguments
+- DAG Definition
+- Task Declaration
+- Task Dependencies
+- DAG Instantiation
+
 python cli.py atlas
 """
 

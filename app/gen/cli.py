@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from main import MongoDBStorage
 from src.objects.users import Users
 from src.objects.payments import Payments
+from src.api import api_requests
 
 load_dotenv()
 
@@ -19,6 +20,7 @@ mongo_uri = os.getenv("MONGODB_URI")
 db_name = os.getenv("MONGODB_DB_NAME")
 
 gen_amount = 500
+api = api_requests.Requests()
 
 
 def handle_atlas_storage():
@@ -27,12 +29,14 @@ def handle_atlas_storage():
     """
     mongo_storage_instance = MongoDBStorage(mongo_uri, db_name)
 
+    cpf_list = [api.gen_cpf() for _ in range(gen_amount)]
+
     dt_users = Users.get_multiple_rows(gen_dt_rows=gen_amount)
-    users_json, _ = Storage.create_dataframe(dt_users, "users", is_cpf=True)
+    users_json, _ = Storage.create_dataframe(dt_users, "users", is_cpf=True, gen_user_id=True, cpf_list=cpf_list)
     mongo_storage_instance.insert_users(users_json)
 
     dt_payments = Payments.get_multiple_rows(gen_dt_rows=gen_amount)
-    payments_json, _ = Storage.create_dataframe(dt_payments, "payments", is_cpf=True)
+    payments_json, _ = Storage.create_dataframe(dt_payments, "payments", is_cpf=True, gen_user_id=True, cpf_list=cpf_list)
     mongo_storage_instance.insert_payments(payments_json)
 
 

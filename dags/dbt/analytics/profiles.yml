@@ -1,0 +1,12 @@
+# gcloud auth application-default login
+silver-charmer-243611:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: silver-charmer-243611
+      dataset: OwsHQ
+      threads: 1
+      timeout_seconds: 300
+      priority: interactive
