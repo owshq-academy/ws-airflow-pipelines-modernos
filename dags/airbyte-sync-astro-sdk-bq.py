@@ -61,14 +61,14 @@ def init():
     start = EmptyOperator(task_id="start")
     end = EmptyOperator(task_id="end")
 
-    # trigger_airbyte_sync_atlas_gcs = AirbyteTriggerSyncOperator(
-        # task_id='trigger_airbyte_sync',
-        # connection_id=airbyte_sync_atlas_gcs_id,
-        # airbyte_conn_id=airbyte_conn_id,
-        # asynchronous=False,
-        # timeout=3600,
-        # wait_seconds=3
-    # )
+    trigger_airbyte_sync_atlas_gcs = AirbyteTriggerSyncOperator(
+        task_id='trigger_airbyte_sync',
+        connection_id=airbyte_sync_atlas_gcs_id,
+        airbyte_conn_id=airbyte_conn_id,
+        asynchronous=False,
+        timeout=3600,
+        wait_seconds=3
+    )
 
     users_parquet = aql.load_file(
         task_id="users_parquet",
@@ -89,8 +89,7 @@ def init():
     )
 
     # TODO Task Dependencies
-    # start >> trigger_airbyte_sync_atlas_gcs >> [users_parquet, payments_parquet] >> end
-    start >> [users_parquet, payments_parquet] >> end
+    start >> trigger_airbyte_sync_atlas_gcs >> [users_parquet, payments_parquet] >> end
 
 
 # TODO DAG Instantiation
