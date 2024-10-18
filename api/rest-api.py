@@ -5,10 +5,8 @@ import json
 from requests.auth import HTTPBasicAuth
 from datetime import datetime
 
-# TODO airflow api url = DAG name
+# TODO set airflow configs
 AIRFLOW_API_URL = "http://localhost:8080/api/v1/dags/airbyte-sync-astro-sdk-bq/dagRuns"
-
-# TODO authentication credentials (adjust as needed)
 USERNAME = "admin"
 PASSWORD = "admin"
 
